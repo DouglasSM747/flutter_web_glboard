@@ -49,7 +49,7 @@ class ListGamesDevController extends ChangeNotifier {
     notifyListeners();
     await Future.delayed(const Duration(seconds: 3));
 
-    String url = "${urlbackend}/users/games_dev";
+    String url = "$urlbackend/users/games_dev";
 
     try {
       var result = await clientHttp.get(
