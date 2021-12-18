@@ -34,7 +34,7 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 2));
-    String url = "$urlbackend/users/register";
+    String url = "${urlbackend}/users/register";
     try {
       await clientHttp.post(url, userModel.toMap());
       final shared = await SharedPreferences.getInstance();

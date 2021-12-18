@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:glboard_web/src/constants.dart';
+import '../models/list_games_dev_model.dart';
 import 'package:glboard_web/src/shared/service_http.dart';
-
-import 'models/list_games_dev_model.dart';
 
 enum ListGamesDevState { idle, success, error, loading }
 
@@ -18,15 +15,15 @@ class ListGamesDevController extends ChangeNotifier {
     _fetchGames();
   }
 
-  List<GameDevModel> listGamesDev = List.empty();
+  List<GameGeralInfoModel> listGamesDev = List.empty();
 
   Future<void> _fetchGames() async {
+    if (listGamesDev.isNotEmpty) return;
+
     state = ListGamesDevState.loading;
     notifyListeners();
 
-    if (listGamesDev.isNotEmpty) return;
-
-    String url = "$urlbackend/users/games";
+    String url = "${urlbackend}/users/games_dev";
 
     try {
       var result = await clientHttp.get(
@@ -52,7 +49,7 @@ class ListGamesDevController extends ChangeNotifier {
     notifyListeners();
     await Future.delayed(const Duration(seconds: 3));
 
-    String url = "$urlbackend/users/games";
+    String url = "${urlbackend}/users/games_dev";
 
     try {
       var result = await clientHttp.get(
@@ -71,12 +68,12 @@ class ListGamesDevController extends ChangeNotifier {
     }
   }
 
-  List<GameDevModel> _jsonToListGames(data) {
+  List<GameGeralInfoModel> _jsonToListGames(data) {
     var tagObjsJson = data['games'] as List;
 
     return tagObjsJson
         .map(
-          (tagJson) => GameDevModel.fromJson(tagJson),
+          (tagJson) => GameGeralInfoModel.fromJson(tagJson),
         )
         .toList();
   }

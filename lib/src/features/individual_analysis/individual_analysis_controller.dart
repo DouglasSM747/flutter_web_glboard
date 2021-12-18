@@ -1,46 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:glboard_web/src/constants.dart';
-import 'package:glboard_web/src/features/general_analysis/models/general_analysis_model.dart';
+import 'package:glboard_web/src/features/individual_analysis/models/individual_analysis_model.dart';
 import 'package:glboard_web/src/shared/service_http.dart';
 import 'package:glboard_web/src/shared/structs.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-enum GeneralAnalysisState { idle, success, error, loading }
+enum IndividualAnalysisState { idle, success, error, loading }
 
-class GeneralAnalysisController extends ChangeNotifier {
-  var state = GeneralAnalysisState.idle;
+class IndividualAnalysisController extends ChangeNotifier {
+  var state = IndividualAnalysisState.idle;
 
   final ClientHttp clientHttp;
 
   String error = "";
 
-  var generalAnalysisModel = GeneralAnalysisModel();
+  var individualAnalysisModel = IndividualAnalysisModel();
 
-  GeneralAnalysisController(this.clientHttp);
+  IndividualAnalysisController(this.clientHttp);
 
-  Future<void> fetchGeneralAnalysis(String gameID) async {
-    if (generalAnalysisModel.quantPlayers > 0) return;
-
-    state = GeneralAnalysisState.loading;
+  Future<void> fetchIndividualAnalysis(String gameUserId) async {
+    state = IndividualAnalysisState.loading;
     notifyListeners();
 
     await Future.delayed(const Duration(seconds: 2));
 
-    String url = "${urlbackend}/data_analysis";
+    String url = "${urlbackend}/user_analysis";
 
     try {
-      var result = await clientHttp.get(url, {"game_id": gameID});
-      generalAnalysisModel = GeneralAnalysisModel.fromJson(result);
+      var result = await clientHttp.get(url, {"game_user_id": gameUserId});
+      individualAnalysisModel = IndividualAnalysisModel.fromJson(result);
 
-      state = GeneralAnalysisState.success;
+      // final shared = await SharedPreferences.getInstance();
+      // await shared.setString('GeneralDataAnalysis');
+      state = IndividualAnalysisState.success;
       notifyListeners();
-      state = GeneralAnalysisState.idle;
+      state = IndividualAnalysisState.idle;
       notifyListeners();
     } catch (e) {
       error = e.toString();
-      state = GeneralAnalysisState.error;
+      state = IndividualAnalysisState.error;
       notifyListeners();
-      state = GeneralAnalysisState.idle;
+      state = IndividualAnalysisState.idle;
       notifyListeners();
     }
   }
@@ -49,13 +49,14 @@ class GeneralAnalysisController extends ChangeNotifier {
     final List<ChartData> chartData = [];
 
     int sizeArray =
-        generalAnalysisModel.averagePerfomacePhaseTotal?.length ?? 0;
+        individualAnalysisModel.averagePerfomacePhaseTotal?.length ?? 0;
 
     for (int i = 0; i < sizeArray; i++) {
       chartData.add(
         ChartData(
-          generalAnalysisModel.averagePerfomacePhaseTotal![i].phase,
-          generalAnalysisModel.averagePerfomacePhaseTotal![i].averagePhase,
+          individualAnalysisModel.averagePerfomacePhaseTotal![i].phase,
+          individualAnalysisModel.averagePerfomacePhaseTotal![i].averagePhase
+              .toDouble(),
         ),
       );
     }
@@ -65,13 +66,14 @@ class GeneralAnalysisController extends ChangeNotifier {
   List<ColumnSeries<ChartData, String>> attemptsPhaseDataChart() {
     final List<ChartData> chartData = [];
 
-    int sizeArray = generalAnalysisModel.attemptsPhaseTotal?.length ?? 0;
+    int sizeArray = individualAnalysisModel.attemptsPhaseTotal?.length ?? 0;
 
     for (int i = 0; i < sizeArray; i++) {
       chartData.add(
         ChartData(
-          generalAnalysisModel.attemptsPhaseTotal![i].phase,
-          generalAnalysisModel.attemptsPhaseTotal![i].attemptPhase.toDouble(),
+          individualAnalysisModel.attemptsPhaseTotal![i].phase,
+          individualAnalysisModel.attemptsPhaseTotal![i].attemptPhase
+              .toDouble(),
         ),
       );
     }
@@ -81,13 +83,14 @@ class GeneralAnalysisController extends ChangeNotifier {
   List<ColumnSeries<ChartData, String>> conclusionPhaseDataChart() {
     final List<ChartData> chartData = [];
 
-    int sizeArray = generalAnalysisModel.quantPlayerFinalizedPhase?.length ?? 0;
+    int sizeArray =
+        individualAnalysisModel.quantPlayerFinalizedPhase?.length ?? 0;
 
     for (int i = 0; i < sizeArray; i++) {
       chartData.add(
         ChartData(
-          generalAnalysisModel.quantPlayerFinalizedPhase![i].phase,
-          generalAnalysisModel.quantPlayerFinalizedPhase![i].quantConclusion
+          individualAnalysisModel.quantPlayerFinalizedPhase![i].phase,
+          individualAnalysisModel.quantPlayerFinalizedPhase![i].quantConclusion
               .toDouble(),
         ),
       );
@@ -98,13 +101,13 @@ class GeneralAnalysisController extends ChangeNotifier {
   List<ColumnSeries<ChartData, String>> timeInPhaseDataChart() {
     final List<ChartData> chartData = [];
 
-    int sizeArray = generalAnalysisModel.timePlayedPhaseTotal?.length ?? 0;
+    int sizeArray = individualAnalysisModel.timePlayedPhaseTotal?.length ?? 0;
 
     for (int i = 0; i < sizeArray; i++) {
       chartData.add(
         ChartData(
-          generalAnalysisModel.timePlayedPhaseTotal![i].phase,
-          generalAnalysisModel.timePlayedPhaseTotal![i].timePhaseMinutes
+          individualAnalysisModel.timePlayedPhaseTotal![i].phase,
+          individualAnalysisModel.timePlayedPhaseTotal![i].timePhaseMinutes
               .toDouble(),
         ),
       );

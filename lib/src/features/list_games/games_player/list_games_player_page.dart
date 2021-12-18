@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:glboard_web/src/constants.dart';
+import 'package:glboard_web/src/features/individual_analysis/individual_analysis_page.dart';
 import 'package:glboard_web/src/features/initi_page.dart';
-import 'package:glboard_web/src/features/list_games/create_game_dialog/create_game_page.dart';
-import 'package:glboard_web/src/features/list_games/list_games_dev_controller.dart';
+import 'package:glboard_web/src/features/list_games/games_player/list_games_player_controller.dart';
+import 'package:glboard_web/src/features/list_games/insert_game_player_dialog/insert_game_player_page.dart';
 import 'package:glboard_web/src/shared/widgets.dart';
 import 'package:provider/provider.dart';
 
-class ListGamesDev extends StatefulWidget {
-  const ListGamesDev({Key? key}) : super(key: key);
+class ListGamesPlayer extends StatefulWidget {
+  const ListGamesPlayer({Key? key}) : super(key: key);
 
   @override
-  _ListGamesDevState createState() => _ListGamesDevState();
+  _ListGamesPlayerState createState() => _ListGamesPlayerState();
 }
 
-class _ListGamesDevState extends State<ListGamesDev> {
-  late final ListGamesDevController controller;
+class _ListGamesPlayerState extends State<ListGamesPlayer> {
+  late final ListGamesPlayerController controller;
 
   @override
   void initState() {
@@ -23,14 +24,14 @@ class _ListGamesDevState extends State<ListGamesDev> {
       Navigator.of(context).pushReplacementNamed('/auth');
     }
 
-    controller = context.read<ListGamesDevController>();
+    controller = context.read<ListGamesPlayerController>();
 
     controller.addListener(() {
-      if (controller.state == ListGamesDevState.error) {
+      if (controller.state == ListGamesPlayerState.error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(controller.error)),
         );
-      } else if (controller.state == ListGamesDevState.success) {
+      } else if (controller.state == ListGamesPlayerState.success) {
         // Navigator.of(context).pushReplacementNamed('/auth');
       }
     });
@@ -55,19 +56,19 @@ class _ListGamesDevState extends State<ListGamesDev> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text(
-                      "Tabela de Jogos do Desenvolvedor",
+                      "Tabela de Jogos do Jogador",
                       style: TextStyle(fontSize: 30),
                     ),
                     SizedBox(
                       width: 200,
                       height: 40,
                       child: CommonWidgets.buttonDefault(
-                        "Cadastrar Novo Jogo",
+                        "Inserir Jogo",
                         callback: () async {
                           await showDialog(
                             context: context,
                             builder: (_) {
-                              return const CreteGameDev();
+                              return const InsertGamePlayer();
                             },
                           );
                           controller.refreshGames();
@@ -77,7 +78,7 @@ class _ListGamesDevState extends State<ListGamesDev> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const ListViewGamesDev(),
+                const ListViewGamesPlayer(),
               ],
             )
           ],
@@ -87,21 +88,22 @@ class _ListGamesDevState extends State<ListGamesDev> {
   }
 }
 
-class ListViewGamesDev extends StatelessWidget {
-  const ListViewGamesDev({Key? key}) : super(key: key);
+class ListViewGamesPlayer extends StatelessWidget {
+  const ListViewGamesPlayer({Key? key}) : super(key: key);
 
-  void goToGeneralAnalysis(context, String gameID) {
+  void goToIndividualAnalysis(context, String gameUserID) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      settings: const RouteSettings(name: '/general_analysis'),
-      builder: (context) => MainPage(gameID),
+      settings: const RouteSettings(name: '/individual_analysis'),
+      builder: (context) => IndividualAnalysis(gameUserID),
     ));
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final controller = context.watch<ListGamesDevController>();
-    return controller.state != ListGamesDevState.loading
+    final controller = context.watch<ListGamesPlayerController>();
+
+    return controller.state != ListGamesPlayerState.loading
         ? Container(
             alignment: Alignment.center,
             width: size.width - 300,
@@ -110,21 +112,19 @@ class ListViewGamesDev extends StatelessWidget {
               [
                 "Nome do Jogo",
                 "Chave do Jogo",
-                "Quantidade Jogadores",
               ],
               List.generate(
-                controller.listGamesDev.length,
+                controller.listGamesPlayer.length,
                 (index) {
                   return [
-                    controller.listGamesDev[index].name,
-                    controller.listGamesDev[index].key,
-                    controller.listGamesDev[index].countPlayers.toString(),
+                    controller.listGamesPlayer[index].name,
+                    controller.listGamesPlayer[index].key,
                   ];
                 },
               ),
               clicked: true,
               columnClick: 1,
-              function: (value) => goToGeneralAnalysis(context, value),
+              function: (value) => goToIndividualAnalysis(context, value),
             ),
           )
         : CommonWidgets.loading();

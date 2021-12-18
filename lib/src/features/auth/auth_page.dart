@@ -1,6 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace
-import 'package:glboard_web/src/features/initi_page.dart';
-import 'package:glboard_web/src/features/list_games/list_games_dev_page.dart';
+
+import 'package:glboard_web/src/constants.dart';
 import 'package:glboard_web/src/shared/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,14 @@ class _AuthPageState extends State<AuthPage> {
           SnackBar(content: Text(controller.error)),
         );
       } else if (controller.state == AuthState.success) {
-        Navigator.of(context).pushReplacementNamed('/listgamesdev');
+        if (globalUserModel.typeruser == "Desenvolvedor") {
+          Navigator.of(context).pushReplacementNamed('/listgamesdev');
+        } else if (globalUserModel.typeruser == "Professor") {
+          Navigator.of(context).pushReplacementNamed('/listgamesprof');
+        } else if (globalUserModel.typeruser == "Jogador") {
+          debugPrint("Caro: " + globalUserModel.typeruser);
+          Navigator.of(context).pushReplacementNamed('/listgamesplayer');
+        }
       } else {}
     });
   }

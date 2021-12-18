@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:glboard_web/src/constants.dart';
 import 'package:glboard_web/src/features/general_analysis/general_analysis_controller.dart';
 import 'package:glboard_web/src/features/sidebar/sider_bar.dart';
 import 'package:glboard_web/src/shared/widgets.dart';
 import 'package:provider/provider.dart';
 
 class GeneralAnalysis extends StatefulWidget {
-  final String gameId;
-
-  const GeneralAnalysis(this.gameId, {Key? key}) : super(key: key);
+  const GeneralAnalysis({Key? key}) : super(key: key);
 
   @override
   _GeneralAnalysisState createState() => _GeneralAnalysisState();
@@ -33,14 +32,14 @@ class _GeneralAnalysisState extends State<GeneralAnalysis> {
 
     //! TODO -> Não sei sei se é a melhor solução, porém chamada o fetch somente no fim do ciclo do initstate
     SchedulerBinding.instance!.addPostFrameCallback((_) {
-      controller.fetchGeneralAnalysis(widget.gameId);
+      controller.fetchGeneralAnalysis(selectedGameID);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavigationDrawerWidget(widget.gameId),
+      drawer: const NavigationDrawerWidget(),
       appBar: AppBar(),
       body: const PageGeneralAnalysis(),
     );
@@ -159,13 +158,13 @@ class PageGeneralAnalysis extends StatelessWidget {
 }
 
 class DialogDaysSections extends StatelessWidget {
-  final Map<String, dynamic> sectionsDays;
+  final Map<String, dynamic>? sectionsDays;
   const DialogDaysSections(this.sectionsDays, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var mapKeys = sectionsDays.keys.toList();
-    var mapValues = sectionsDays.values.toList();
+    var mapKeys = sectionsDays?.keys.toList();
+    var mapValues = sectionsDays?.values.toList();
 
     return AlertDialog(
       title: const Text("Seções Realizadas Por Dia"),
@@ -173,11 +172,11 @@ class DialogDaysSections extends StatelessWidget {
         height: 400,
         width: 200,
         child: ListView.builder(
-          itemCount: sectionsDays.length,
+          itemCount: sectionsDays?.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text("Dia ${mapKeys[index]}"),
-              subtitle: Text("Seções: ${mapValues[index]}"),
+              title: Text("Dia ${mapKeys?[index]}"),
+              subtitle: Text("Seções: ${mapValues?[index]}"),
             );
           },
         ),

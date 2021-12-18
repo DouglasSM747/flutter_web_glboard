@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:glboard_web/src/constants.dart';
 import 'package:glboard_web/src/features/general_analysis/general_analysis_page.dart';
 import 'package:glboard_web/src/features/list_players/list_players.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
-  final String gameID;
-
   final padding = const EdgeInsets.symmetric(horizontal: 20);
 
-  const NavigationDrawerWidget(this.gameID, {Key? key}) : super(key: key);
+  const NavigationDrawerWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,13 +116,13 @@ class NavigationDrawerWidget extends StatelessWidget {
       case 0:
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           settings: const RouteSettings(name: '/general_analysis'),
-          builder: (context) => GeneralAnalysis(gameID),
+          builder: (context) => const GeneralAnalysis(),
         ));
         break;
       case 1:
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           settings: const RouteSettings(name: '/list_players'),
-          builder: (context) => ListPlayers(gameID),
+          builder: (context) => const ListPlayers(),
         ));
         break;
       case 2:
@@ -132,7 +131,11 @@ class NavigationDrawerWidget extends StatelessWidget {
         ));
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed('/listgamesdev');
+        if (globalUserModel.typeruser == "Desenvolvedor") {
+          Navigator.of(context).pushReplacementNamed('/listgamesdev');
+        } else if (globalUserModel.typeruser == "Professor") {
+          Navigator.of(context).pushReplacementNamed('/listgamesprof');
+        }
         break;
     }
   }

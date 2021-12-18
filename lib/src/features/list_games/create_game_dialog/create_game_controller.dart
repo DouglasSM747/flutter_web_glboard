@@ -18,7 +18,7 @@ class CreateGameDevController extends ChangeNotifier {
     state = CreateGameDevState.loading;
     notifyListeners();
 
-    String url = "$urlbackend/users/games";
+    String url = "${urlbackend}/users/games";
     try {
       var result = await clientHttp.post(
         url,

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:glboard_web/src/constants.dart';
 import 'package:glboard_web/src/shared/service_http.dart';
@@ -19,12 +17,14 @@ class ListPlayersController extends ChangeNotifier {
   ListPlayersController(this.clientHttp);
 
   Future<void> fetchPlayersGame(String gameID) async {
+    if (playersModel.isNotEmpty) return;
+
     playersModel = [];
 
     state = ListPlayersState.loading;
     notifyListeners();
 
-    String url = "$urlbackend/data-game/users/$gameID";
+    String url = "${urlbackend}/data-game/users/$gameID";
 
     try {
       var result = await clientHttp.get(url, {});
@@ -49,7 +49,7 @@ class ListPlayersController extends ChangeNotifier {
     notifyListeners();
     await Future.delayed(const Duration(seconds: 3));
 
-    String url = "$urlbackend/data-game/$gameID";
+    String url = "${urlbackend}/data-game/$gameID";
 
     try {
       var result = await clientHttp.get(url, {});

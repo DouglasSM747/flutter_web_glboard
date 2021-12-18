@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:glboard_web/src/constants.dart';
+import 'package:glboard_web/src/features/individual_analysis/individual_analysis_page.dart';
 import 'package:glboard_web/src/features/list_players/list_players_controller.dart';
 import 'package:glboard_web/src/features/sidebar/sider_bar.dart';
-import 'package:glboard_web/src/shared/utils_code.dart';
 import 'package:glboard_web/src/shared/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ListPlayers extends StatefulWidget {
-  final String gameID;
-
-  const ListPlayers(this.gameID, {Key? key}) : super(key: key);
+  const ListPlayers({Key? key}) : super(key: key);
   @override
   _ListPlayersState createState() => _ListPlayersState();
 }
@@ -39,7 +37,9 @@ class _ListPlayersState extends State<ListPlayers> {
 
     //! TODO -> Não sei sei se é a melhor solução, porém chamada o fetch somente no fim do ciclo do initstate
     SchedulerBinding.instance!.addPostFrameCallback((_) {
-      controller.fetchPlayersGame(widget.gameID);
+      controller.fetchPlayersGame(
+        selectedGameID,
+      );
     });
   }
 
@@ -48,7 +48,7 @@ class _ListPlayersState extends State<ListPlayers> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
-      drawer: NavigationDrawerWidget(widget.gameID),
+      drawer: const NavigationDrawerWidget(),
       body: SizedBox(
         width: size.width,
         height: size.height,
@@ -61,7 +61,9 @@ class _ListPlayersState extends State<ListPlayers> {
               style: TextStyle(fontSize: 35),
             ),
             const SizedBox(height: 20),
-            ListViewPlayers(widget.gameID),
+            ListViewPlayers(
+              selectedGameID,
+            ),
           ],
         ),
       ),
@@ -74,11 +76,11 @@ class ListViewPlayers extends StatelessWidget {
 
   const ListViewPlayers(this.gameID, {Key? key}) : super(key: key);
 
-  void goToGeneralAnalysis(context, String gameID) {
-    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //   settings: const RouteSettings(name: '/general_analysis'),
-    //   builder: (context) => MainPage(gameID),
-    // ));
+  void goToIndividualAnalysis(context, String gameUserId) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      settings: const RouteSettings(name: '/individual_analysis'),
+      builder: (context) => IndividualAnalysis(gameUserId),
+    ));
   }
 
   @override
@@ -108,7 +110,7 @@ class ListViewPlayers extends StatelessWidget {
               }),
               clicked: true,
               columnClick: 3,
-              function: (value) => {debugPrint(value)},
+              function: (value) => goToIndividualAnalysis(context, value),
             ),
           )
         : CommonWidgets.loading();

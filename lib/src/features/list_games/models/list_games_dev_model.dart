@@ -1,9 +1,9 @@
-class GameDevModel {
+class GameGeralInfoModel {
   String _name = "";
   String _key = "";
   int _countPlayers = 0;
 
-  GameDevModel(
+  GameGeralInfoModel(
     String name,
     String key,
     int countPlayers,
@@ -20,10 +20,10 @@ class GameDevModel {
   int get countPlayers => _countPlayers;
   set countPlayers(int countPlayers) => _countPlayers = countPlayers;
 
-  GameDevModel.fromJson(Map<String, dynamic> json) {
+  GameGeralInfoModel.fromJson(Map<String, dynamic> json) {
     _name = json['name'];
     _key = json['key'];
-    _countPlayers = json['countPlayers'];
+    _countPlayers = json['countPlayers'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
