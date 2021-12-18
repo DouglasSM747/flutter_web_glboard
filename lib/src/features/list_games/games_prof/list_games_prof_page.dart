@@ -92,7 +92,6 @@ class ListViewGamesProf extends StatelessWidget {
   const ListViewGamesProf({Key? key}) : super(key: key);
 
   void goToGeneralAnalysis(context, String gameID) {
-    debugPrint(gameID);
     selectedGameID = gameID;
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       settings: const RouteSettings(name: '/general_analysis'),
